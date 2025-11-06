@@ -1,6 +1,6 @@
-## 🎮 GameBoy Emulator: RFPO-GB
+# 🎮 GameBoy Emulator: RFPO-GB
 
-# 🚀 Project Overview: Why Build an Emulator?
+## 🚀 Project Overview: Why Build an Emulator?
 
 This project is an emulator for the original GameBoy built from scratch in modern C++.
 
@@ -13,3 +13,16 @@ The goal of this exercise is deepen my low-level systems programming. It require
 - Complex State Machines: Implementing the Picture Processing Unit (PPU) and other time-sensitive hardware logic.
 
 The goal was not just to run games, but most importantly to understand the finite state machine of the hardware well enough to pass common public emulator test ROMs.
+
+
+## Usefull links:
+
+https://gbdev.io/pandocs/
+
+https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
+
+https://archive.org/details/GameBoyProgManVer1.1/page/n85/mode/2up
+
+https://github.com/rockytriton/LLD_gbemu/raw/main/docs/The%20Cycle-Accurate%20Game%20Boy%20Docs.pdf
+
+https://github.com/rockytriton/LLD_gbemu/raw/main/docs/gbctr.pdf
