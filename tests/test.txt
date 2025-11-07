@@ -1,12 +1,11 @@
-
-cppreference.com
+0123456789eference.com
 
     Page
     Discussion
 
 std::getline
  
-C++
+C+
  
 Strings library
  
@@ -117,3 +116,5 @@ See also
 getline
 	extracts characters until the given character is found
 (public member function of std::basic_istream<CharT,Traits>)
+
+fim
