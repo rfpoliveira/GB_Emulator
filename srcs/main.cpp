@@ -28,11 +28,11 @@ int run_emu(int argc, char** argv)
         return (-1);
     }
 
-    if (!cart_load(argv[1]))
-    {
-        std::cout << "Failed to load cartrige: " << argv[1] << std::endl;
-        return (-2);
-    }
+    Cart *cart = new Cart(argv[1]);
+
+    std::cout << cart->cart_lic_name() << "\n";
+    std::cout << cart->cart_type_name() << "\n";
+
     std::cout << "Cartrige loaded..." << std::endl;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -65,6 +65,9 @@ int run_emu(int argc, char** argv)
             return (-6);
         }
         emu.ticks++;
+        break;
     }
+
+    delete cart;
     return (0);
 }

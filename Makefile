@@ -1,55 +1,27 @@
-CPP = c++
+program_NAME := main
+program_CXX_SRCS := srcs/main.cpp srcs/emu.cpp srcs/cart.cpp srcs/cpu.cpp
+program_CXX_OBJS := ${program_CXX_SRCS:.cpp=.o}
+program_OBJS := $(program_CXX_OBJS)
+program_INCLUDE_DIRS := /usr/include/SDL2
+program_LIBRARY_DIRS :=
+program_LIBRARIES := SDL2 SDL2_ttf
+CXX=c++
 
-CPPFLAGS = -Wall -Werror -Wextra -g
+CPPFLAGS += $(foreach includedir,$(program_INCLUDE_DIRS),-I$(includedir))
+LDFLAGS += $(foreach librarydir,$(program_LIBRARY_DIRS),-L$(librarydir))
+LDLIBS += $(foreach library,$(program_LIBRARIES),-l$(library))
 
-SRCS = src/main.cpp 
-OBJS = $(SRCS:.cpp=.o)
-NAME = RFPO-GB
+.PHONY: all clean distclean re
 
-all: $(NAME)
-$(NAME): $(OBJS)
-	@$(CPP) $(CPPFLAGS) $(OBJS) -o $(NAME)
-	@echo "$(GRN)[RFPO-GB compiled]$(D)"
+all: $(program_NAME)
 
-#==============================================================================#
-#                                    cleaning rules                            #
-#==============================================================================#
-clean: 
-	@$(RM) $(OBJS)
-	@echo "$(BCYA)[clean] Objects removed$(D)"
+$(program_NAME): $(program_OBJS)
+	$(LINK.cc) $(program_OBJS) -o $(program_NAME) $(LDLIBS)
 
-fclean: clean
-	@$(RM) $(NAME)
-	@echo "$(BCYA)[fclean] RFPO-GB removed$(D)"
+clean:
+	$(RM) $(program_NAME)
+	$(RM) $(program_OBJS)
 
-re: fclean all
+re: clean all
 
-#==============================================================================#
-#                                  UTILS                                       #
-#==============================================================================#
-
-# Colors
-#
-# Run the following command to get list of available colors
-# bash -c 'for c in {0..255}; do tput setaf $c; tput setaf $c | cat -v; echo =$c; done'
-#
-B  		= $(shell tput bold)
-BLA		= $(shell tput setaf 0)
-RED		= $(shell tput setaf 1)
-GRN		= $(shell tput setaf 2)
-YEL		= $(shell tput setaf 3)
-BLU		= $(shell tput setaf 4)
-MAG		= $(shell tput setaf 5)
-CYA		= $(shell tput setaf 6)
-WHI		= $(shell tput setaf 7)
-GRE		= $(shell tput setaf 8)
-BRED 	= $(shell tput setaf 9)
-BGRN	= $(shell tput setaf 10)
-BYEL	= $(shell tput setaf 11)
-BBLU	= $(shell tput setaf 12)
-BMAG	= $(shell tput setaf 13)
-BCYA	= $(shell tput setaf 14)
-BWHI	= $(shell tput setaf 15)
-D 		= $(shell tput sgr0)
-BEL 	= $(shell tput bel)
-CLR 	= $(shell tput el 1)
+distclean: clean

@@ -9,7 +9,7 @@ class Cart
         ~Cart();
 
         std::string filename;
-        std::string rom_data;
+        u8 *rom_data;
 
         u8 entry[4];
         u8 logo[0x30];
@@ -24,7 +24,6 @@ class Cart
         u8 lic_code;
         u8 version;
         u8 checksum;
-        u16 global_checksum;
 
         static const std::vector<std::string> rom_types;
 
@@ -40,7 +39,7 @@ class Cart
         };
 
         std::string cart_lic_name() const;
-        std::string Cart::cart_type_name() const;
+        std::string cart_type_name() const;
         void cart_load();
 };
 

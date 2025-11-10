@@ -6,17 +6,27 @@
 int main()
 {
     std::ifstream ifs("test.txt");
-    std::string s;
-    std::string save;
+    uint8_t *s;
+    int i = 0;
+    char c = 0;
 
-    while (getline(ifs, s))
+    std::filesystem::path filePath = "test.txt";
+    uint16_t rom_size = std::filesystem::file_size(filePath);
+
+    s = new uint8_t[rom_size];
+    while (ifs.get(c))
     {
-        std::cout << s << "\n";
-        save += s;
+        s[i] = c;
+        i++;
     }
 
-    std::cout << "testing: " << s[0x1] << std::endl;
+    for(int j = 0; j < rom_size; j++)
+        std::cout << s[j];
+    std::cout << std::endl;
+
+    
 
     ifs.close();
+    delete[] s;
     return (0);
 }
