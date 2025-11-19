@@ -29,7 +29,7 @@ class Cart
 
         static const std::map<int, std::string> lic_codes;
 
-        class CartLoadFailedExeption: std::exception
+        class CartLoadFailedExeption: public std::exception
         {
             public:
                 virtual const char *what() const throw()
@@ -40,6 +40,6 @@ class Cart
 
         std::string cart_lic_name() const;
         std::string cart_type_name() const;
-        void cart_load();
+        bool cart_load(std::string filename);
 };
 

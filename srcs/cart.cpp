@@ -104,11 +104,13 @@ const std::map<int, std::string> Cart::lic_codes {
 
 Cart::Cart(std::string filename)
 {
+    if(!cart_load(filename))
+        throw CartLoadFailedExeption();
+
     this->filename = filename;
-    this->title = "0";
 
-    cart_load();
-
+    for(int i = 0x134; i < 0x144; i++)
+        this->title += rom_data[i];
     this->lic_code = rom_data[0x14B];
     this->new_lic_code = 0;
     if (this->lic_code = 0x33)
@@ -149,8 +151,10 @@ Cart::~Cart()
 
 std::string Cart::cart_lic_name() const
 {
-    if (this->new_lic_code > 0xA4)
+    if (this->lic_code > 0xA4)
         return ("UNKNOWN");
+    if (this->lic_code == 0x33)
+        return("its a new license code(not implemented yet)");
     auto it = this->lic_codes.find(this->lic_code);
     return (it->second);
 }
@@ -163,9 +167,12 @@ std::string Cart::cart_type_name() const
     return (this->rom_types[this->type]);
 }
 
-void Cart::cart_load()
+bool Cart::cart_load(std::string filename)
 {
-    std::ifstream ifs(this->filename);
+    std::ifstream ifs(filename);
+    if (!ifs.is_open() || !ifs.good())
+        return (false);
+
     char c = 0;
     int i = 0;
 
@@ -178,5 +185,6 @@ void Cart::cart_load()
         (this->rom_data)[i] = c;
         i++;
     }
+    return (true);
 }
 

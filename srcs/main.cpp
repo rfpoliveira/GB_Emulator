@@ -12,27 +12,25 @@ int main (int argc, char **argv)
     return (close_emu());
 }
 
-int close_emu(void)
-{
-    SDL_Quit();
-    TTF_Quit();
-
-    return (0);
-}
-
 int run_emu(int argc, char** argv)
 {
-    if (argc < 2)
+    if (!args_parse(argc, argv))
+        return(-1);
+
+    Cart* cart = nullptr;
+    try
     {
-        std::cout << "Usage: ./RFPO-GB <rom_file>" << std::endl;
-        return (-1);
+        cart = new Cart(argv[1]);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return (-2);
     }
 
-    Cart *cart = new Cart(argv[1]);
-
-    std::cout << cart->cart_lic_name() << "\n";
-    std::cout << cart->cart_type_name() << "\n";
-
+    std::cout << cart->title << "\n";
+    std::cout << cart->cart_lic_name() << '\n';
+    std::cout << cart->new_lic_code << '\n';
     std::cout << "Cartrige loaded..." << std::endl;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)

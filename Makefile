@@ -1,5 +1,5 @@
 program_NAME := main
-program_CXX_SRCS := srcs/main.cpp srcs/emu.cpp srcs/cart.cpp srcs/cpu.cpp
+program_CXX_SRCS := srcs/main.cpp srcs/emu.cpp srcs/cart.cpp srcs/cpu.cpp srcs/memory.cpp srcs/parse_utils.cpp
 program_CXX_OBJS := ${program_CXX_SRCS:.cpp=.o}
 program_OBJS := $(program_CXX_OBJS)
 program_INCLUDE_DIRS := /usr/include/SDL2
