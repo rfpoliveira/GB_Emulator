@@ -5,6 +5,7 @@
 class Cart
 {
     public:
+        Cart() {};
         Cart(std::string filename);
         ~Cart();
 
@@ -41,5 +42,7 @@ class Cart
         std::string cart_lic_name() const;
         std::string cart_type_name() const;
         bool cart_load(std::string filename);
+        u8 cart_read(u16 adress);
+        void cart_write(u16 adress, u8 value);
 };
 

@@ -1,5 +1,4 @@
 #include "../incs/main.hpp"
-#include "../incs/cart.hpp"
 
 const std::vector<std::string> Cart::rom_types {
         "ROM Only", 
@@ -186,5 +185,16 @@ bool Cart::cart_load(std::string filename)
         i++;
     }
     return (true);
+}
+
+u8 Cart::cart_read(u16 adress)
+{
+    return (rom_data[adress]);
+}
+
+void Cart::cart_write(u16 adress, u8 value)
+{
+    std::cerr << "Not implemented yet" << std::endl;
+    return ;
 }
 

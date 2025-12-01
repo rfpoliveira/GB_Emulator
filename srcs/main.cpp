@@ -17,20 +17,17 @@ int run_emu(int argc, char** argv)
     if (!args_parse(argc, argv))
         return(-1);
 
-    Cart* cart = nullptr;
+
     try
     {
-        cart = new Cart(argv[1]);
+        Data data(argv[1]);
     }
     catch (const std::exception& e)
     {
         std::cerr << e.what() << '\n';
         return (-2);
     }
-
-    std::cout << cart->title << "\n";
-    std::cout << cart->cart_lic_name() << '\n';
-    std::cout << cart->new_lic_code << '\n';
+    
     std::cout << "Cartrige loaded..." << std::endl;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -66,6 +63,5 @@ int run_emu(int argc, char** argv)
         break;
     }
 
-    delete cart;
     return (0);
 }
