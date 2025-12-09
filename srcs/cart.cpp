@@ -1,4 +1,4 @@
-#include "../incs/main.hpp"
+#include "../incs/cart.hpp"
 
 const std::vector<std::string> Cart::rom_types {
         "ROM Only", 
@@ -100,6 +100,10 @@ const std::map<int, std::string> Cart::lic_codes {
     {0x99, "Pack-In-Video"},
     {0xA4, "Konami (Yu-Gi-Oh!)"}
 };
+
+
+/*load the cart into memory and then load some information to the class*/
+/* rom_data is allocated */
 
 Cart::Cart(std::string filename)
 {

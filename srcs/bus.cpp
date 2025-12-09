@@ -1,5 +1,4 @@
-#include <bus.hpp>
-
+#include "../incs/bus.hpp"
 
 //memory map:
 
@@ -20,19 +19,23 @@
 // 0xFF00 - 0xFF7F : I/O Registers
 // 0xFF80 - 0xFFFE : Zero Page
 
-u8 bus_read(u16 adress, Cart cart)
+
+/*read the passed adress from the rom data*/
+u8 bus_read(u16 adress, Cart *cart)
 {
     if (adress < 0x8000)
-        return (cart.cart_read(adress));
-    std::cerr << "Not implemented yet" << std::endl;
-    return (0);
+        return (cart->cart_read(adress));
+    std::cerr << "Not implemented yet adress > 0x8000" << std::endl;
+    return (0xFD);
 }
 
-void bus_write(u16 adress, u8 value, Cart cart)
+
+/*write something in the rom data*/
+void bus_write(u16 adress, u8 value, Cart *cart)
 {
     if (adress < 0x8000)
     {
-        cart.cart_write(adress, value);
+        cart->cart_write(adress, value);
         return ;
     }
 }

@@ -38,7 +38,7 @@ enum addr_mode
 
 enum inst_type
 {
-    NONE,
+    IT_NONE,
     NOP,
     LD,
     INC,
@@ -86,7 +86,7 @@ enum inst_type
 };
 
 enum regist_type{
-    NONE,
+    RT_NONE,
     A,
     F,
     B,
@@ -112,3 +112,5 @@ struct instruction
     cond_type cond;
     u8 param;
 };
+
+instruction *fetch_instruction_by_opcode(u8 opcode);

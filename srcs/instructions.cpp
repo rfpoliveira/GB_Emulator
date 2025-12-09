@@ -1,7 +1,8 @@
 #include "../incs/instructions.hpp"
-#include "../incs/cpu.hpp"
 
-instruction instructions[0x255] = 
+
+/*all the instrucions connected to thier opcodes for easy access*/
+instruction instructions[0x100] = 
 {
     [0x00] = {NOP, AM_IMP,},
     [0X01] = {LD, AM_R_D8, BC,},
@@ -27,7 +28,7 @@ instruction instructions[0x255] =
     [0X15] = {DEC, AM_R, D,},
     [0X16] = {LD, AM_R_D8, D,},
     [0X17] = {RLA,},
-    [0X18] = {JP, AM_IMP, NONE, NONE, CT_NONE, 8}, /**/
+    [0X18] = {JP, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 8}, /**/
     [0X19] = {ADD, AM_R_R, HL, DE,},
     [0X1A] = {LD, AM_R_MR, A, DE,},
     [0X1B] = {DEC, AM_R, DE,},
@@ -35,7 +36,7 @@ instruction instructions[0x255] =
     [0X1D] = {DEC, AM_R, E,},
     [0X1E] = {LD, AM_R_D8, E,},
     [0X1F] = {RRA,},
-    [0X20] = {JR, AM_IMP, NONE, NONE, CT_NZ, 8}, /**/
+    [0X20] = {JR, AM_IMP, RT_NONE, RT_NONE, CT_NZ, 8}, /**/
     [0X21] = {LD, AM_R_D16, HL,},
     [0X22] = {LD, AM_HLI_R, A,}, /**/
     [0X23] = {INC, AM_R, HL,},
@@ -43,7 +44,7 @@ instruction instructions[0x255] =
     [0X25] = {DEC, AM_R, H,},
     [0X26] = {LD, AM_R_D8, H},
     [0X27] = {DAA,},
-    [0X28] = {JR, AM_IMP, NONE, NONE, CT_Z, 8}, /**/
+    [0X28] = {JR, AM_IMP, RT_NONE, RT_NONE, CT_Z, 8}, /**/
     [0X29] = {ADD, AM_R_R, HL, HL,},
     [0X2A] = {LD, AM_R_HLI, A,},
     [0X2B] = {DEC, AM_R, HL,},
@@ -51,7 +52,7 @@ instruction instructions[0x255] =
     [0X2D] = {DEC, AM_R, L,},
     [0X2E] = {LD, AM_R_D8, L},
     [0X2F] = {CPL,},
-    [0X30] = {JR, AM_IMP, NONE, NONE, CT_NC, 8}, /**/
+    [0X30] = {JR, AM_IMP, RT_NONE, RT_NONE, CT_NC, 8}, /**/
     [0X31] = {LD, AM_R_D16, SP,},
     [0X32] = {LD, AM_HLD_R, A,},
     [0X33] = {INC, AM_R, SP,},
@@ -59,7 +60,7 @@ instruction instructions[0x255] =
     [0X35] = {DEC, AM_MR, HL,},
     [0X36] = {LD, AM_MR_D8, HL,},
     [0X37] = {SCF,},
-    [0X38] = {JR, AM_IMP, NONE, NONE, CT_C, 8}, /**/
+    [0X38] = {JR, AM_IMP, RT_NONE, RT_NONE, CT_C, 8}, /**/
     [0X39] = {ADD, AM_R_R, HL, SP,},
     [0X3A] = {LD, AM_R_HLD, A,},
     [0X3B] = {DEC, AM_R, SP,},
@@ -195,66 +196,78 @@ instruction instructions[0x255] =
     [0XBD] = {CP, AM_R, L,},
     [0XBE] = {CP, AM_MR, HL,},
     [0XBF] = {CP, AM_R_R, A,},
-    [0XC0] = {RET, AM_IMP, NONE, NONE, CT_NZ,}, /**/
+    [0XC0] = {RET, AM_IMP, RT_NONE, RT_NONE, CT_NZ,}, /**/
     [0XC1] = {POP, AM_R, BC,},
-    [0XC2] = {JP, AM_D16, NONE, NONE, CT_NZ,}, /**/
+    [0XC2] = {JP, AM_D16, RT_NONE, RT_NONE, CT_NZ,}, /**/
     [0XC3] = {JP, AM_D16,},
-    [0XC4] = {CALL, AM_D16, NONE, NONE, CT_NZ,}, /**/
+    [0XC4] = {CALL, AM_D16, RT_NONE, RT_NONE, CT_NZ,}, /**/
     [0XC5] = {PUSH, AM_R, BC,},
     [0XC6] = {ADD, AM_R_D8, A,},
-    [0XC7] = {RST, AM_IMP, NONE, NONE, CT_NONE, 0}, /**/ /**/
-    [0XC8] = {RET, AM_IMP, NONE, NONE, CT_Z,},
+    [0XC7] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 0}, /**/ /**/
+    [0XC8] = {RET, AM_IMP, RT_NONE, RT_NONE, CT_Z,},
     [0XC9] = {RET,},
-    [0XCA] = {JP, AM_D16, NONE, NONE, CT_Z,},
-
-    [0XCC] = {CALL, AM_D16, NONE, NONE, CT_Z,},
+    [0XCA] = {JP, AM_D16, RT_NONE, RT_NONE, CT_Z,},
+    [0xCB] = {IT_NONE},
+    [0XCC] = {CALL, AM_D16, RT_NONE, RT_NONE, CT_Z,},
     [0XCD] = {CALL, AM_D16,},
     [0XCE] = {ADC, AM_R_D8, A,},
-    [0XCF] = {RST, AM_IMP, NONE, NONE, CT_NONE, 1}, /**/
-    [0XD0] = {RET, AM_IMP, NONE, NONE, CT_NC,}, /**/
+    [0XCF] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 1}, /**/
+    [0XD0] = {RET, AM_IMP, RT_NONE, RT_NONE, CT_NC,}, /**/
     [0XD1] = {POP, AM_R, DE,},
-    [0XD2] = {JP, AM_D16, NONE, NONE, CT_NC,}, /**/
-
-    [0XD4] = {CALL, AM_D16, NONE, NONE, CT_NC,}, /**/
+    [0XD2] = {JP, AM_D16, RT_NONE, RT_NONE, CT_NC,}, /**/
+    [0xD3] = {IT_NONE},
+    [0XD4] = {CALL, AM_D16, RT_NONE, RT_NONE, CT_NC,}, /**/
     [0XD5] = {PUSH, AM_R, DE,},
     [0XD6] = {SUB, AM_D8,},
-    [0XD7] = {RST, AM_IMP, NONE, NONE, CT_NONE, 2}, /**/ /**/
-    [0XD8] = {RET, AM_IMP, NONE, NONE, CT_C,},
+    [0XD7] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 2}, /**/ /**/
+    [0XD8] = {RET, AM_IMP, RT_NONE, RT_NONE, CT_C,},
     [0XD9] = {RETI,},
-    [0XDA] = {JP, AM_D16, NONE, NONE, CT_C,},
-
-    [0XDC] = {CALL, AM_D16, NONE, NONE, CT_C,},
-
+    [0XDA] = {JP, AM_D16, RT_NONE, RT_NONE, CT_C,},
+    [0xDB] = {IT_NONE},
+    [0XDC] = {CALL, AM_D16, RT_NONE, RT_NONE, CT_C,},
+    [0xDD] = {IT_NONE},
     [0XDE] = {SBC, AM_R_D8, A,},
-    [0XDF] = {RST, AM_IMP, NONE, NONE, CT_NONE, 3}, /**/
+    [0XDF] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 3}, /**/
     [0XE0] = {LD, AM_A8_R, A,},
     [0XE1] = {POP, AM_R, HL,},
     [0XE2] = {LD, AM_MR_R, C, A,},
-
-
+    [0xE3] = {IT_NONE},
+    [0xE4] = {IT_NONE},
     [0XE5] = {PUSH, AM_R, HL,},
     [0XE6] = {AND, AM_D8,},
-    [0XE7] = {RST, AM_IMP, NONE, NONE, CT_NONE, 4}, /**/
-    [0XE8] = {ADD, AM_R, SP, NONE, CT_NONE, 8},
+    [0XE7] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 4}, /**/
+    [0XE8] = {ADD, AM_R, SP, RT_NONE, CT_NONE, 8},
     [0XE9] = {JP, AM_R, HL,},
     [0XEA] = {LD, AM_A16_R, A,},
-
-
-
+    [0xEB] = {IT_NONE},
+    [0xEC] = {IT_NONE},
+    [0xED] = {IT_NONE},
     [0XEE] = {XOR, AM_D8,},
-    [0XEF] = {RST, AM_IMP, NONE, NONE, CT_NONE, 5}, /**/
+    [0XEF] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 5}, /**/
     [0XF0] = {LD, AM_R_A8, A,},
     [0XF1] = {POP, AM_R, AF,},
     [0XF2] = {LD, AM_R_MR, A, C,},
     [0XF3] = {DI,},
-    
+    [0xF4] = {IT_NONE},
     [0XF5] = {PUSH, AM_R, AF,},
     [0XF6] = {OR, AM_D8,},
-    [0XF7] = {RST, AM_IMP, NONE, NONE, CT_NONE, 6}, /**/
+    [0XF7] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 6}, /**/
     [0XF8] = {LD, AM_HL_SPR,},
     [0XF9] = {LD, AM_R_R, SP, HL,},
     [0XFA] = {LD, AM_R_A16, A,},
     [0XFB] = {EI,},
+    [0xFC] = {IT_NONE},
+    [0xFD] = {IT_NONE},
     [0XFE] = {CP, AM_D8,},
-    [0XFF] = {RST, AM_IMP, NONE, NONE, CT_NONE, 7} /**/
+    [0XFF] = {RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 7},/**/
 };
+
+/*take the code of the instruction and returns the struct with the informacoion of that
+    specific instruciton*/
+
+instruction *fetch_instruction_by_opcode(u8 opcode)
+{
+    if (instructions[opcode].type == IT_NONE)
+        return (NULL);
+    return(&instructions[opcode]);
+}

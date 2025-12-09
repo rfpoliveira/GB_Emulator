@@ -10,25 +10,17 @@
 #include <sstream>
 #include <filesystem>
 #include <memory>
+#include <functional>
 
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 
-#include "cart.hpp"
-#include "cpu.hpp"
+#define BIT(a, n) ((a & (1 << n)) ? 1 : 0) //changes bit n of register a
 
-class Data
-{
-    public:
-        Data() {};
-        ~Data() {};
-        Data(std::string args): cart(args){};
+#define BIT_SET(a, n, on) (on ? (a) |= (1 << n) : (a) &= ~(1 << n)) //changes bit n of register a comparin it to on
 
-        Cart cart;
-        CPU cpu;
-
-};
+#define BETWEEN(a, b, c) ((a >= b) && (a <= c))
 
 int run_emu(int argc, char** argv);
 bool args_parse(int argc, char **argv);

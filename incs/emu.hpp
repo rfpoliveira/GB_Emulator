@@ -10,4 +10,6 @@ class Emulator
         bool running;
         bool paused;
         uint64_t ticks;
+
+        void emu_cycle(int cycles);
 };
