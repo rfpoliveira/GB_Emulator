@@ -42,7 +42,7 @@ class Cart
         std::string cart_lic_name() const;
         std::string cart_type_name() const;
         bool cart_load(std::string filename);
-        u8 cart_read(u16 adress);
-        void cart_write(u16 adress, u8 value);
+        u8 cart_read(u16 address);
+        void cart_write(u16 address, u8 value);
 };
 

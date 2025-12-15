@@ -191,14 +191,13 @@ bool Cart::cart_load(std::string filename)
     return (true);
 }
 
-u8 Cart::cart_read(u16 adress)
+u8 Cart::cart_read(u16 address)
 {
-    return (rom_data[adress]);
+    return (rom_data[address]);
 }
 
-void Cart::cart_write(u16 adress, u8 value)
+void Cart::cart_write(u16 address, u8 value)
 {
-    std::cerr << "Not implemented yet" << std::endl;
-    return ;
+    std::cerr << "Not implemented yet, cart write" << std::endl;
 }
 

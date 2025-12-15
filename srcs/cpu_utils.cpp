@@ -49,35 +49,35 @@ void CPU::cpu_set_regis(regist_type rt, u16 address)
     switch(rt) 
     {
         case A: 
-            regis.a = address & 0xFF;
+            regis.a = address & 0xFF; break;
         case F: 
-            regis.f = address & 0xFF;
+            regis.f = address & 0xFF; break;
         case B: 
-            regis.b = address & 0xFF;
+            regis.b = address & 0xFF; break;
         case C: 
-            regis.c = address & 0xFF;
+            regis.c = address & 0xFF; break;
         case D: 
-            regis.d = address & 0xFF;
+            regis.d = address & 0xFF; break;
         case E: 
-            regis.e = address & 0xFF;
+            regis.e = address & 0xFF; break;
         case H: 
-            regis.h = address & 0xFF;
+            regis.h = address & 0xFF; break;
         case L: 
-            regis.l = address & 0xFF;
+            regis.l = address & 0xFF; break;
 
         case AF: 
-            *((u16 *)&regis.a) = reverse(address);
+            *((u16 *)&regis.a) = reverse(address); break;
         case BC: 
-            *((u16 *)&regis.b) = reverse(address);
+            *((u16 *)&regis.b) = reverse(address); break;
         case DE: 
-            *((u16 *)&regis.d) = reverse(address);
+            *((u16 *)&regis.d) = reverse(address); break;
         case HL: 
-            *((u16 *)&regis.h) = reverse(address);
+            *((u16 *)&regis.h) = reverse(address); break;
 
         case PC: 
-            regis.pc = address;
+            regis.pc = address; break;
         case SP: 
-            regis.sp = address;
+            regis.sp = address; break;
     }
 
     return ;

@@ -1,18 +1,18 @@
 #include "../incs/cpu.hpp"
 
 /*only inicialized the variables (safety)*/
-CPU::CPU(Cart *cart)
+CPU::CPU(Cart *cart, RAM *ram)
 {
     regis.a = 0x01; //this are the default values for the registers
-    regis.f = 0xB0;
+    regis.f = 0x00;
     regis.b = 0x00;
-    regis.c = 0x13;
+    regis.c = 0x00;
     regis.d = 0x00;
-    regis.e = 0xD8;
-    regis.h = 0x01;
-    regis.l = 0x4D;
+    regis.e = 0x00;
+    regis.h = 0x00;
+    regis.l = 0x00;
     regis.pc = 0;
-    regis.sp = 0xFFFE;
+    regis.sp = 0x00;
     fetch_data = 0;
     mem_dest = 0;
     dest_is_mem = false;
@@ -22,6 +22,7 @@ CPU::CPU(Cart *cart)
     stepping = false;
     master_enabled = true;
     cart_ptr = cart;
+    ram_ptr = ram;
 
     procs[0] = std::bind(&CPU::proc_NONE, this);
     procs[1] = std::bind(&CPU::proc_NOP, this);
@@ -68,6 +69,7 @@ CPU::CPU(Cart *cart)
     procs[41] = std::bind(&CPU::proc_BIT, this); 
     procs[42] = std::bind(&CPU::proc_RES, this); 
     procs[43] = std::bind(&CPU::proc_SET, this);
+    //procs[44] = std::bind(&CPU::proc_LDH, this);
 };
 
 int CPU::cpu_init(void)
@@ -79,7 +81,7 @@ int CPU::cpu_init(void)
 /*reads from the rom_data the curr instructions*/
 void CPU::fetch_instruction()
 {
-    curr_opcode = bus_read(regis.pc++, cart_ptr);
+    curr_opcode = bus_read(regis.pc++, cart_ptr, ram_ptr);
     curr_inst = fetch_instruction_by_opcode(curr_opcode);
     if (!curr_inst)
     {
@@ -96,15 +98,79 @@ void CPU::execute_inst()
         throw CPUFailedExeption();
     proc();
 }
-/*the real cpu loop going threw the instructions*/
 
+std::string get_type(enum inst_type type) //just for debug
+{
+    switch (type)
+    {
+        case IT_NONE: return ("IT_NONE");
+        case NOP: return ("NOP");
+        case LD: return ("LD");
+        case INC: return ("INC");
+        case DEC: return ("DEC");
+        case RLCA: return ("RLCA");
+        case ADD: return ("ADD");
+        case ADC: return ("ADC");
+        case RRCA: return ("RRCA");
+        case STOP: return ("STOP");
+        case RLA: return ("RLA");
+        case JR: return ("JR");
+        case RRA: return ("RRA");
+        case DAA: return ("DAA");
+        case CPL: return ("CPL");
+        case SCF: return ("SCF");
+        case CCF: return ("CCF");
+        case HALT: return ("HALT");
+        case SUB: return ("SUB");
+        case SBC: return ("SBC");
+        case AND: return ("AND");
+        case XOR: return ("XOR");
+        case OR: return ("OR");
+        case CP: return ("CP");
+        case RET: return ("RET");
+        case RETI: return ("RETI");
+        case POP: return ("POP");
+        case CALL: return ("CALL");
+        case PUSH: return ("PUSH");
+        case RST: return ("RST");
+        case EI: return ("EI");
+        case DI: return ("DI");
+        case JP: return ("JP");
+        case RLC: return ("RLC"); 
+        case RRC: return ("RRC");
+        case RL: return ("RL"); 
+        case RR: return ("RR");
+        case SLA: return ("SLA"); 
+        case RA: return ("RA");
+        case SWAP: return ("SWAP"); 
+        case SRL: return ("SRL");
+        case BIT: return ("BIT"); 
+        case RES: return ("RES"); 
+        case SET: return ("SET");
+        //case LDH: return ("LDH"); 
+    }
+    return (nullptr);
+}
+
+/*the real cpu loop going threw the instructions*/
 bool CPU::cpu_step(void)
 {
+    u16 pc_og = regis.pc; //for the debug print
+
     if(!halted)
-    { //do i need to re-inicialize some vars? (mem_is_dest f.e.)
+    { 
+        dest_is_mem = false; //back to the normal state
         fetch_instruction(); //gets the insctruction from the rom data and puts it into the curr_inst
-        printf("executing: %X at pc: %X\n", curr_opcode, regis.pc - 1);
-        fetch_data_inst(); /*puts on fecth_data the correct data depending on the adress mode of the instruction*/
+        fetch_data_inst(); /*puts on fecth_data the correct data depending on the address mode of the instruction*/
+
+
+        //debug_print
+        printf("%04X: %s (%02X %02X %02X) A: %02X BC: %02X%02X DE: %02X%02X HL: %02X%02X\n", 
+            pc_og, get_type(curr_inst->type).c_str(), curr_opcode,
+            bus_read(pc_og + 1, cart_ptr, ram_ptr), bus_read(pc_og + 2, cart_ptr, ram_ptr), 
+            regis.a, regis.b, regis.c, regis.d, regis.e, regis.h, regis.l);
+
+
         execute_inst(); /*finnaly executes the instruction*/
     }
     return (true);

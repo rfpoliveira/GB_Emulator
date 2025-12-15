@@ -82,7 +82,8 @@ enum inst_type
     SRL,
     BIT, 
     RES, 
-    SET
+    SET,
+    //LDH,
 };
 
 enum regist_type{

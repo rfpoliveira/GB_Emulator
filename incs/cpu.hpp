@@ -5,6 +5,7 @@
 #include "../incs/emu.hpp"
 #include "../incs/bus.hpp"
 #include "../incs/instructions.hpp"
+#include "../incs/ram.hpp"
 
 struct cpu_registers
 {
@@ -24,8 +25,8 @@ class CPU
 {
     public:
         CPU() {};
-        CPU(Cart *cart);
-        ~CPU() {};
+        CPU(Cart *cart, RAM *ram);
+        ~CPU();
 
         int cpu_init(void);
         bool cpu_step(void);
@@ -38,6 +39,8 @@ class CPU
         u8 curr_opcode;
         instruction *curr_inst;
         Cart *cart_ptr;
+        RAM *ram_ptr;
+
 
         bool halted;
         bool stepping;
@@ -97,6 +100,7 @@ class CPU
         void proc_BIT(); 
         void proc_RES(); 
         void proc_SET();
+        //void proc_LDH();
 
         bool check_conditional();
         void cpu_flags(char z, char n, char h, char c);

@@ -9,7 +9,36 @@ void CPU::proc_NONE()
 };
 void CPU::proc_NOP(){};
 
-void CPU::proc_LD(){};
+void CPU::proc_LD()
+{
+     if (dest_is_mem)
+     {
+          if (curr_inst->reg2 >= AF) //if it is a 16bit register
+          {
+               emu.emu_cycle(1);
+               bus_write_16bit(mem_dest, fetch_data, cart_ptr, ram_ptr);
+          }
+          else //8bit register
+               bus_write(mem_dest, fetch_data, cart_ptr, ram_ptr);
+
+          return ;
+     }
+
+     if (curr_inst->mode == AM_HL_SPR)
+     {
+          u8 hflag = (cpu_read_regis(curr_inst->reg2) & 0xF) + 
+                    (fetch_data & 0xF) >= 0x10;
+          u8 cflag = (cpu_read_regis(curr_inst->reg2) & 0xFF) + 
+                    (fetch_data & 0xFF) >= 0x100;
+          cpu_flags(0, 0, hflag, cflag);
+          cpu_set_regis(curr_inst->reg1, 
+               cpu_read_regis(curr_inst->reg2) + (char)fetch_data); //casting cuz there could be a negative number
+
+          return ;
+     }
+     cpu_set_regis(curr_inst->reg1, fetch_data);
+};
+
 void CPU::proc_INC(){};
 void CPU::proc_DEC(){};
 void CPU::proc_RLCA(){};
@@ -71,3 +100,12 @@ void CPU::proc_SRL(){};
 void CPU::proc_BIT(){}; 
 void CPU::proc_RES(){}; 
 void CPU::proc_SET(){};
+
+/* void CPU::proc_LDH()
+{    
+     if (curr_inst->reg1 == A)
+          cpu_set_regis(curr_inst->reg1, bus_read(0xFF00 | fetch_data, cart_ptr, ram_ptr));
+     else
+          bus_write(0xFF00 | fetch_data, regis.a, cart_ptr, ram_ptr);
+     emu.emu_cycle(1);
+}; */

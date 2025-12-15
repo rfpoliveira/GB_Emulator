@@ -15,12 +15,14 @@ int main (int argc, char **argv)
 }
 
 /*when we return we must free the memery from cart and cpu*/
-int r_delete(Cart *cart, CPU *cpu, int code)
+int r_delete(Cart *cart, CPU *cpu, RAM *ram, int code)
 {
     if (cart)
         delete cart;
     if (cpu)
         delete cpu;
+    if (ram)
+        delete ram;
     return(code);
 }
 
@@ -34,30 +36,32 @@ int run_emu(int argc, char** argv)
     if (!args_parse(argc, argv))
         return(-1);
 
+    RAM *ram = nullptr;
     Cart *cart = nullptr;
     CPU *cpu = nullptr;
     try
     {
+        ram = new RAM();
         cart = new Cart(argv[1]);
-        cpu = new CPU(cart);
+        cpu = new CPU(cart, ram);
     }
     catch (const std::exception& e)
     {
         std::cerr << e.what() << '\n';
-        return(r_delete(cart, cpu, -2));
+        return(r_delete(cart, cpu, ram, -2));
     }
     std::cout << "Cartrige loaded..." << std::endl;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cout << "SDL_Init failed" << std::endl;
-        return(r_delete(cart, cpu, -3));
+        return(r_delete(cart, cpu, ram, -3));
     }
 
     if (TTF_Init() < 0)
     {
         std::cout << "TTF_Init failed" << std::endl;
-        return(r_delete(cart, cpu, -4));
+        return(r_delete(cart, cpu, ram, -4));
     }
 
     cpu->cpu_init();
@@ -78,7 +82,7 @@ int run_emu(int argc, char** argv)
         catch (const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            return(r_delete(cart, cpu, -6));
+            return(r_delete(cart, cpu, ram, -6));
         }
         emu.ticks++;
 
@@ -86,5 +90,5 @@ int run_emu(int argc, char** argv)
             break ; // test
     }
 
-    return (r_delete(cart, cpu, 0));
+    return (r_delete(cart, cpu, ram, 0));
 }
