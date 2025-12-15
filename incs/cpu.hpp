@@ -45,6 +45,7 @@ class CPU
         bool master_enabled;
 
         u16 cpu_read_regis(regist_type rt);
+        void cpu_set_regis(regist_type rt, u16 address);
         void fetch_instruction();
         void fetch_data_inst();
         void execute_inst();

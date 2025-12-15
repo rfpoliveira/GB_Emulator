@@ -44,6 +44,45 @@ u16 CPU::cpu_read_regis(regist_type rt)
     }
 }
 
+void CPU::cpu_set_regis(regist_type rt, u16 address) 
+{
+    switch(rt) 
+    {
+        case A: 
+            regis.a = address & 0xFF;
+        case F: 
+            regis.f = address & 0xFF;
+        case B: 
+            regis.b = address & 0xFF;
+        case C: 
+            regis.c = address & 0xFF;
+        case D: 
+            regis.d = address & 0xFF;
+        case E: 
+            regis.e = address & 0xFF;
+        case H: 
+            regis.h = address & 0xFF;
+        case L: 
+            regis.l = address & 0xFF;
+
+        case AF: 
+            *((u16 *)&regis.a) = reverse(address);
+        case BC: 
+            *((u16 *)&regis.b) = reverse(address);
+        case DE: 
+            *((u16 *)&regis.d) = reverse(address);
+        case HL: 
+            *((u16 *)&regis.h) = reverse(address);
+
+        case PC: 
+            regis.pc = address;
+        case SP: 
+            regis.sp = address;
+    }
+
+    return ;
+}
+
 CPU::FUNC_PROC CPU::inst_get_proc(inst_type type)
 {
     return(procs[type]);

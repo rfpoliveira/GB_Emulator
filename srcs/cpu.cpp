@@ -1,7 +1,5 @@
 #include "../incs/cpu.hpp"
 
-extern Emulator emu;
-
 /*only inicialized the variables (safety)*/
 CPU::CPU(Cart *cart)
 {
@@ -91,42 +89,6 @@ void CPU::fetch_instruction()
     }
 }
 
-/*puts on fecth_data the correct data depending on the adress mode of the instruction*/
-void CPU::fetch_data_inst()
-{
-    switch (curr_inst->mode)
-    {
-        case AM_IMP:
-            return;
-        
-        case AM_R: 
-            fetch_data = cpu_read_regis(curr_inst->reg1); 
-            return;
-
-        case AM_R_D8:
-            fetch_data = bus_read(regis.pc, cart_ptr);
-            emu.emu_cycle(1);
-            regis.pc++;
-            return;
-
-        case AM_D16:
-        {
-            u16 low = bus_read(regis.pc, cart_ptr);
-            emu.emu_cycle(1);
-            u16 high = bus_read(regis.pc + 1, cart_ptr);
-            emu.emu_cycle(1);
-
-            fetch_data = low | (high << 8);
-            regis.pc += 2;
-            return;
-        }
-
-        default:
-            printf("adress mode not implemented yet: %X\n", curr_opcode);
-            throw CPUFailedExeption();
-    }
-}
-
 void CPU::execute_inst()
 {
     FUNC_PROC proc = inst_get_proc(curr_inst->type);
@@ -139,11 +101,11 @@ void CPU::execute_inst()
 bool CPU::cpu_step(void)
 {
     if(!halted)
-    {
-        fetch_instruction();
+    { //do i need to re-inicialize some vars? (mem_is_dest f.e.)
+        fetch_instruction(); //gets the insctruction from the rom data and puts it into the curr_inst
         printf("executing: %X at pc: %X\n", curr_opcode, regis.pc - 1);
-        fetch_data_inst();
-        execute_inst();
+        fetch_data_inst(); /*puts on fecth_data the correct data depending on the adress mode of the instruction*/
+        execute_inst(); /*finnaly executes the instruction*/
     }
     return (true);
 }
