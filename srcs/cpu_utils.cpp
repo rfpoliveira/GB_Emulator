@@ -128,3 +128,14 @@ void CPU::cpu_flags(char z, char n, char h, char c)
     }
 }
 
+u8 CPU::get_ie_register()
+{
+    return (ie_register);
+}
+void CPU::set_ie_register(u8 address)
+{
+    ie_register = address;
+}
+
+u8 CPU::ie_register = 0;
+

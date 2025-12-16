@@ -26,10 +26,14 @@ class CPU
     public:
         CPU() {};
         CPU(Cart *cart, RAM *ram);
-        ~CPU();
+        ~CPU() {};
 
         int cpu_init(void);
         bool cpu_step(void);
+
+        static u8 get_ie_register();
+        static void set_ie_register(u8 address);
+        static u8 ie_register;
 
     private:
         cpu_registers regis;
@@ -41,12 +45,11 @@ class CPU
         Cart *cart_ptr;
         RAM *ram_ptr;
 
-
         bool halted;
         bool stepping;
 
         bool master_enabled;
-
+ 
         u16 cpu_read_regis(regist_type rt);
         void cpu_set_regis(regist_type rt, u16 address);
         void fetch_instruction();

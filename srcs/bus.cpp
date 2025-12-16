@@ -1,4 +1,5 @@
 #include "../incs/bus.hpp"
+#include "../incs/cpu.hpp"
 
 //memory map:
 
@@ -52,11 +53,7 @@ u8 bus_read(u16 address, Cart *cart, RAM *ram)
         return (0xFD);
     }
     else if (address == 0xFFFF) //CPU enable register
-    {
-        //TODO
-        std::cerr << "Not implemented yet address 0xFFFF(cpu enable register)" << std::endl;
-        return (0xFD);
-    }
+        return (CPU::get_ie_register());
 
     return (ram->hram_read(address)); //anything bettewn 0xFFFF and 0xFF80, high ram
 }
@@ -85,8 +82,7 @@ void bus_write(u16 address, u8 value, Cart *cart, RAM *ram)
         //TODO
         std::cerr << "Not implemented yet address < 0xFF80(i/o)" << std::endl;
     else if (address == 0xFFFF) //CPU enable register
-        //TODO
-        std::cerr << "Not implemented yet address 0xFFFF(cpu enable register)" << std::endl;
+        CPU::set_ie_register(value);
     else
         ram->hram_write(address, value); //anything bettewn 0xFFFF and 0xFF80, high ram
 }

@@ -86,7 +86,7 @@ int run_emu(int argc, char** argv)
         }
         emu.ticks++;
 
-        if (emu.ticks > 10)
+        if (emu.ticks > 30)
             break ; // test
     }
 

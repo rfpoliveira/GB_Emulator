@@ -21,6 +21,7 @@ CPU::CPU(Cart *cart, RAM *ram)
     halted = false;
     stepping = false;
     master_enabled = true;
+
     cart_ptr = cart;
     ram_ptr = ram;
 
