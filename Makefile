@@ -1,7 +1,7 @@
 program_NAME := GB-EMU
 program_CXX_SRCS := srcs/main.cpp srcs/emu.cpp srcs/cart.cpp srcs/cpu.cpp srcs/memory.cpp \
 srcs/parse_utils.cpp srcs/bus.cpp srcs/instructions.cpp srcs/processors.cpp srcs/cpu_utils.cpp \
-srcs/cpu_fetch_data_inst.cpp srcs/ram.cpp
+srcs/cpu_fetch_data_inst.cpp srcs/ram.cpp srcs/stack.cpp
 program_CXX_OBJS := ${program_CXX_SRCS:.cpp=.o}
 program_OBJS := $(program_CXX_OBJS)
 program_INCLUDE_DIRS := /usr/include/SDL2

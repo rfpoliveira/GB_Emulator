@@ -64,7 +64,7 @@ void bus_write(u16 address, u8 value, Cart *cart, RAM *ram)
 {
     if (address < 0x8000)
         cart->cart_write(address, value);
-        else if(address < 0xA000) //char/map data
+    else if(address < 0xA000) //char/map data
         //TODO
         std::cerr << "Not implemented yet address < 0xA000(char/maps)" << std::endl;
     else if (address < 0xC000) //cart RAM

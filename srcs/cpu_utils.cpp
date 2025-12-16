@@ -1,5 +1,7 @@
 #include "../incs/cpu.hpp"
 
+extern Emulator emu;
+
 u16 reverse(u16 n) {
     return ((n & 0xFF00) >> 8) | ((n & 0x00FF) << 8);
 }
@@ -108,6 +110,21 @@ bool CPU::check_conditional()
      }
      return (false);
 }
+/*sets the pc to a specific addres and if the bool is set alters the value itself*/
+void CPU::goto_address(u16 address, bool push_pc)
+{
+     if(check_conditional())
+     {
+        if (push_pc)
+        {
+            emu.emu_cycle(2);
+            stack_push16(regis.pc);
+        }
+        regis.pc = address;
+        emu.emu_cycle(1);
+     }
+}
+
 /* sets the bits of the f register (flags) to the value passed*/
 void CPU::cpu_flags(char z, char n, char h, char c)
 {

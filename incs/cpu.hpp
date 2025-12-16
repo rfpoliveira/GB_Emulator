@@ -49,13 +49,17 @@ class CPU
         bool stepping;
 
         bool master_enabled;
- 
+
+        //registers
         u16 cpu_read_regis(regist_type rt);
         void cpu_set_regis(regist_type rt, u16 address);
+
+        //stteping loop
         void fetch_instruction();
         void fetch_data_inst();
         void execute_inst();
 
+        //intruction functions
         typedef std::function<void()> FUNC_PROC;
         FUNC_PROC procs[44];
         void proc_NONE();
@@ -106,12 +110,22 @@ class CPU
         //void proc_LDH();
 
         bool check_conditional();
-        void cpu_flags(char z, char n, char h, char c);
+        void goto_address(u16 address, bool push_pc);
         FUNC_PROC inst_get_proc(inst_type type);
 
+        //flags
+        void cpu_flags(char z, char n, char h, char c);
         #define CPU_FLAG_Z BIT(regis.f, 7);
         #define CPU_FLAG_C BIT(regis.f, 4);
 
+
+        //stack
+        void stack_push(u8 data);
+        void stack_push16(u16 data);
+        u8 stack_pop();
+        u16 stack_pop16();
+
+        //expection
         class CPUFailedExeption: public std::exception
         {
             public:

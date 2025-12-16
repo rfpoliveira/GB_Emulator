@@ -21,6 +21,7 @@ void CPU::proc_LD()
           else //8bit register
                bus_write(mem_dest, fetch_data, cart_ptr, ram_ptr);
 
+          emu.emu_cycle(1);
           return ;
      }
 
@@ -47,7 +48,13 @@ void CPU::proc_ADC(){};
 void CPU::proc_RRCA(){};
 void CPU::proc_STOP(){};
 void CPU::proc_RLA(){};
-void CPU::proc_JR(){};
+
+void CPU::proc_JR()
+{
+     char relative = (char)(fetch_data & 0xFF); //take the low bit and cast it cuz it can be negative (jumping back)
+     u16 address = regis.pc + relative;
+     goto_address(address, false);
+};
 void CPU::proc_RRA(){};
 void CPU::proc_DAA(){};
 void CPU::proc_CPL(){};
@@ -66,12 +73,64 @@ void CPU::proc_XOR()
 
 void CPU::proc_OR(){};
 void CPU::proc_CP(){};
-void CPU::proc_RET(){};
-void CPU::proc_RETI(){};
-void CPU::proc_POP(){};
-void CPU::proc_CALL(){};
-void CPU::proc_PUSH(){};
-void CPU::proc_RST(){};
+
+void CPU::proc_RET()
+{
+     if (curr_inst->cond != CT_NONE)
+          emu.emu_cycle(1);
+     if(check_conditional())
+     {
+          u16 low = stack_pop();
+          emu.emu_cycle(1);
+          u16 high = stack_pop();
+          emu.emu_cycle(1);
+
+          u16 value = (high << 8) | low;
+          regis.pc = value;
+          emu.emu_cycle(1);
+     }
+};
+void CPU::proc_RETI()
+{
+     master_enabled = true;
+     proc_RET();
+};
+
+void CPU::proc_POP()
+{
+     u16 low = stack_pop();
+     emu.emu_cycle(1);
+     u16 high = stack_pop();
+     emu.emu_cycle(1);
+
+     u16 value = (high << 8) | low;
+
+     cpu_set_regis(curr_inst->reg1, value);
+
+     if (curr_inst->reg1 == AF) //special case with this register we only grab 1.5 bytes
+          cpu_set_regis(curr_inst->reg1, value & 0xFFF0);
+};
+void CPU::proc_CALL()
+{
+     goto_address(fetch_data, true);
+};
+
+void CPU::proc_PUSH()
+{
+     u16 high = (cpu_read_regis(curr_inst->reg1) >> 8) & 0xFF;
+     emu.emu_cycle(1);
+     stack_push(high);
+
+     u16 low = cpu_read_regis(curr_inst->reg2) & 0xFF;
+     emu.emu_cycle(1);
+     stack_push(low);
+
+     emu.emu_cycle(1);
+};
+void CPU::proc_RST()
+{
+     goto_address(curr_inst->param, true);
+};
 void CPU::proc_EI(){};
 
 void CPU::proc_DI()
@@ -81,11 +140,7 @@ void CPU::proc_DI()
 
 void CPU::proc_JP()
 {
-     if(check_conditional())
-     {
-          regis.pc = fetch_data;
-          emu.emu_cycle(1);
-     }
+     goto_address(fetch_data, false);
 };
 
      //CB instructions...

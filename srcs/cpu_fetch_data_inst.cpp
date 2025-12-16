@@ -135,11 +135,12 @@ void CPU::fetch_data_inst()
             u16 high = bus_read(regis.pc + 1, cart_ptr, ram_ptr);
             emu.emu_cycle(1);
 
-            mem_dest = low | (high << 8);
+            mem_dest = (high << 8) | low;
             dest_is_mem = true;
 
             regis.pc += 2;
             fetch_data = cpu_read_regis(curr_inst->reg2);
+            return ;
         }
 
         case AM_MR_D8: //moving a 8bit address to the address of a register
